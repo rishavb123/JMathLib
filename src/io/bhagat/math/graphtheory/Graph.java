@@ -1,0 +1,58 @@
+package io.bhagat.math.graphtheory;
+
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
+
+public class Graph<T> {
+
+    private Node<T> head;
+
+    /**
+     * Create an empty graph
+     */
+    public Graph() {}
+
+    /**
+     * Create a graph with data at the head
+     * @param data the data
+     */
+    public Graph(T data) {
+        this(new Node<T>(data));
+    }
+
+    /**
+     * Create a graph with a node at the head
+     * @param head the head node
+     */
+    public Graph(Node<T> head) {
+        this.head = head;
+    }
+
+    /**
+     * Uses a depth first search for the data specified
+     * @param data the data to search for
+     * @return if the data is in the graph
+     */
+    public boolean contains(T data) {
+        Set<Node<T>> visited = new HashSet<>();
+//        Queue<T> queue =
+        return false;
+    }
+
+    /**
+     * Sets the head of the node
+     * @param head the head
+     */
+    public void setHead(Node<T> head) {
+        this.head = head;
+    }
+
+    /**
+     * Gets the head node
+     * @return the head node
+     */
+    public Node<T> getHead() {
+        return head;
+    }
+}
