@@ -36,6 +36,14 @@ public class Node<T> {
     }
 
     /**
+     * Creates a node for data and connects it
+     * @param data the data
+     */
+    public void connect(T data) {
+        connect(new Node<>(data));
+    }
+
+    /**
      * Connects this node to another node (in one direction)
      * @param node the node to connect this node to
      */
@@ -83,5 +91,16 @@ public class Node<T> {
      */
     public void setData(T data) {
         this.data = data;
+    }
+
+    /**
+     * toStrign method
+     * @return the string representation of the node
+     */
+    @Override
+    public String toString() {
+        return "Node{" +
+                "data=" + data +
+                '}';
     }
 }
