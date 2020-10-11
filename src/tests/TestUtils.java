@@ -19,4 +19,11 @@ public class TestUtils {
         System.out.println(tag + ": " + value + " - " + status + " (" + expected + " expected)");
     }
 
+    /**
+     * Ends the test section with a new line
+     */
+    public static void endTest() {
+        System.out.println();
+    }
+
 }
