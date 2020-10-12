@@ -3,8 +3,6 @@ package tests.math.linearalgebra;
 import io.bhagat.math.linearalgebra.Tensor;
 import tests.TestUtils;
 
-import java.util.Arrays;
-
 public class TestTensors {
     public static void main(String[] args) {
         Tensor<String> tensor = new Tensor<>(3, 2);

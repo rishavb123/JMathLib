@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A class for tensors as arrays
+ * A class for multi dimensional tensors tensors as arrays
  * @param <T> the tensor type
  */
 public class Tensor<T> implements Iterable<T>{
