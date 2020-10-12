@@ -50,7 +50,7 @@ public class Tensor<T> implements Iterable<T>{
      * @param backingArray the backing array containing the data
      * @param dimensions the dimensions of the tensor
      */
-    private Tensor(Object[] backingArray, int[] dimensions) {
+    protected Tensor(Object[] backingArray, int[] dimensions) {
         this(dimensions);
         this.backingArray = backingArray;
     }
