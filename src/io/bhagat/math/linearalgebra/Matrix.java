@@ -40,7 +40,7 @@ public class Matrix extends Tensor<Double> {
      * @param r the row index
      * @return the row vector
      */
-    public Vector getRow(int r) {
+    public Vector getRowVector(int r) {
         return new Vector(getSubTensor(r));
     }
 
@@ -49,7 +49,7 @@ public class Matrix extends Tensor<Double> {
      * @param c the column index
      * @return the column vector
      */
-    public Vector getCol(int c) {
+    public Vector getColVector(int c) {
         int[] dim = getDimensions();
         Vector vec = new Vector(dim[0]);
         for(int i = 0; i < dim[0]; i++)
@@ -61,11 +61,11 @@ public class Matrix extends Tensor<Double> {
      * Gets the rows of the matrix
      * @return the array of all the row vectors
      */
-    public Vector[] getRows() {
+    public Vector[] getRowVectors() {
         int[] dim = getDimensions();
         Vector[] vectors = new Vector[dim[0]];
         for(int i = 0; i < dim[0]; i++)
-            vectors[i] = getRow(i);
+            vectors[i] = getRowVector(i);
         return vectors;
     }
 
@@ -73,12 +73,28 @@ public class Matrix extends Tensor<Double> {
      * Gets the columns of the matrix
      * @return the array of all the column vectors
      */
-    public Vector[] getCols() {
+    public Vector[] getColVectors() {
         int[] dim = getDimensions();
         Vector[] vectors = new Vector[dim[1]];
         for(int i = 0; i < dim[1]; i++)
-            vectors[i] = getCol(i);
+            vectors[i] = getColVector(i);
         return vectors;
+    }
+
+    /**
+     * Gets the number of rows in the matrix
+     * @return the number of rows
+     */
+    public int getRows() {
+        return getDimensions()[0];
+    }
+
+    /**
+     * Gets the number of columns in the matrix
+     * @return the number of columns
+     */
+    public int getCols() {
+        return getDimensions()[1];
     }
 
     /**
@@ -113,6 +129,27 @@ public class Matrix extends Tensor<Double> {
             for(int j = 0; j < data[i].length; j++)
                 dataArray[i][j] = data[i][j];
         return dataArray;
+    }
+
+    /**
+     * Multiplies two matricies
+     * @param a the first matrix
+     * @param b the second matrix
+     * @return the output matrix
+     */
+    public static Matrix multiply(Matrix a, Matrix b) {
+        assert a.getDimensions()[1] == b.getDimensions()[0];
+
+        Matrix m = new Matrix(a.getRows(), b.getCols());
+
+        Vector[] aRows = a.getRowVectors();
+        Vector[] bCols = b.getColVectors();
+
+        for(int i = 0; i < m.getRows(); i++)
+            for(int j = 0; j < m.getCols(); j++)
+                m.set(Vector.dot(aRows[i], bCols[j]), i, j);
+
+        return m;
     }
 
 }

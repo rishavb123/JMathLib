@@ -275,4 +275,8 @@ public class Tensor<T> implements Iterable<T>{
         return dim.stream().mapToInt(i -> i).toArray();
     }
 
+    public static boolean equalShape(Tensor<?> a, Tensor<?> b) {
+        return Arrays.equals(a.getDimensions(), b.getDimensions());
+    }
+
 }

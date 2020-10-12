@@ -60,4 +60,38 @@ public class Vector extends Tensor<Double> {
         return arr;
     }
 
+    /**
+     * Calculates the dot product of the two input vectors
+     * @param a the first input vector
+     * @param b the second input vector
+     * @return the scalar output
+     */
+    public static double dot(Vector a, Vector b) {
+        return inner(a, b);
+    }
+
+    /**
+     * Calculates the inner product of the two input vectors
+     * @param a the first input vector
+     * @param b the second input vector
+     * @return the scalar output
+     */
+    public static double inner(Vector a, Vector b) {
+        assert Tensor.equalShape(a, b);
+        int sum = 0;
+        for(int i = 0; i < a.getLength(); i++)
+            sum += a.get(i) * b.get(i);
+        return sum;
+    }
+
+    /**
+     * Calculates the output product of the two input vectors
+     * @param a the first input vector
+     * @param b the second input vector
+     * @return the matrix output
+     */
+    public static Matrix outer(Vector a, Vector b) {
+        return Matrix.multiply(a.columnMatrix(), b.rowMatrix());
+    }
+
 }
