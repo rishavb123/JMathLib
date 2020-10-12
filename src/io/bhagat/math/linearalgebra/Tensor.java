@@ -199,6 +199,14 @@ public class Tensor<T> implements Iterable<T>{
     }
 
     /**
+     * Gets the backing array of the tensor
+     * @return the backing array
+     */
+    Object[] getBackingArray() {
+        return backingArray;
+    }
+
+    /**
      * Gets the length of the backing array
      * @return the backing array length
      */
