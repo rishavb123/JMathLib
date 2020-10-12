@@ -48,6 +48,15 @@ public class TestTensors {
         TestUtils.check("Scalar Set", tensor4.get(), "I'm a single value");
         TestUtils.endTest();
 
+        Tensor<String> tensor5 = new Tensor<>(6);
+        tensor5.set("Hello", 0);
+        tensor5.set(null, 1);
+        tensor5.set(null, 2);
+        tensor5.set(null, 3);
+        tensor5.set("hi", 4);
+        tensor5.set("World", 5);
+        TestUtils.check("Flatten Test", tensor2.flatten(), tensor5);
+        TestUtils.endTest();
 
     }
 }
