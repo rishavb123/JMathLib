@@ -71,7 +71,7 @@ public class Graph<T> {
                 return false;
             }
             set.add(node);
-             assert node != null;
+            assert node != null;
             queue.addAll(node.getConnections());
             if (queue.isEmpty()) {
                 return true;
