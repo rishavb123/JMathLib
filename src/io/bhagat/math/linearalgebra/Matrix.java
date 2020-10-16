@@ -186,4 +186,17 @@ public class Matrix extends Tensor<Double> {
         return multiply(a, b.columnMatrix());
     }
 
+    /**
+     * generates an identity matrix with a specified size
+     * @param size the size is the number of rows and columns
+     * @return the generated matrix
+     */
+    public static Matrix identityMatrix(int size)
+    {
+        Matrix m = new Matrix(size, size);
+        for(int i = 0; i < size; i++)
+            m.set(1.0, i, i);
+        return m;
+    }
+
 }
