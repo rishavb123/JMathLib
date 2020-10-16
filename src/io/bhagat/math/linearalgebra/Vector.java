@@ -70,6 +70,12 @@ public class Vector extends Tensor<Double> {
     }
 
     @Override
+    public Double get(int... pos) {
+        Double d = super.get(pos);
+        return d == null? 0: d;
+    }
+
+    @Override
     public Vector clone() {
         return new Vector(super.clone());
     }

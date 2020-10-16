@@ -129,6 +129,12 @@ public class Matrix extends Tensor<Double> {
     }
 
     @Override
+    public Double get(int... pos) {
+        Double d = super.get(pos);
+        return d == null? 0: d;
+    }
+
+    @Override
     public Matrix clone() {
         return new Matrix(super.clone());
     }
