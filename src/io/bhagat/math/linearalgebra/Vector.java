@@ -69,6 +69,11 @@ public class Vector extends Tensor<Double> {
         return this;
     }
 
+    @Override
+    public Vector clone() {
+        return new Vector(super.clone());
+    }
+
     private static Object[] toBackingArray(double[] nums) {
         Object[] arr = new Object[nums.length];
         for(int i = 0; i < nums.length; i++)

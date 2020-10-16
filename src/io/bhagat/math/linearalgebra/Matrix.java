@@ -128,6 +128,11 @@ public class Matrix extends Tensor<Double> {
         return this;
     }
 
+    @Override
+    public Matrix clone() {
+        return new Matrix(super.clone());
+    }
+
     /**
      * Gets the data in the vector in the array format
      * @return the data array
