@@ -53,6 +53,22 @@ public class Vector extends Tensor<Double> {
         return new Matrix(new Tensor<>(getBackingArray(), new int[] { getLength(), 1 }));
     }
 
+    /**
+     * Normalizes the vector from one range to another
+     * @param origMin the original minimum of the range
+     * @param origMax the original maximum of the range
+     * @param min the new minimum of the range
+     * @param max the new maximum of the range
+     * @return a reference to this vector
+     */
+    public Vector normalize(double origMin, double origMax, double min, double max) {
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < getLength(); i++) {
+            backingArray[i] = ((double) backingArray[i] - origMin) * (max - min) / (origMax - origMin) + min;
+        }
+        return this;
+    }
+
     private static Object[] toBackingArray(double[] nums) {
         Object[] arr = new Object[nums.length];
         for(int i = 0; i < nums.length; i++)
