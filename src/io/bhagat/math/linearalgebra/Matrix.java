@@ -152,4 +152,14 @@ public class Matrix extends Tensor<Double> {
         return m;
     }
 
+    /**
+     * Multiplies a matrix with a vector
+     * @param a the matrix
+     * @param b the vector
+     * @return the output matrix
+     */
+    public static Matrix multiply(Matrix a, Vector b) {
+        return multiply(a, b.columnMatrix());
+    }
+
 }
