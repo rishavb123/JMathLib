@@ -1,5 +1,7 @@
 package io.bhagat.math.linearalgebra;
 
+import io.bhagat.math.exceptions.InvalidShapeException;
+
 public class Matrix extends Tensor<Double> {
 
     /**
@@ -111,6 +113,22 @@ public class Matrix extends Tensor<Double> {
     }
 
     /**
+     * Normalizes the matrix from one range to another
+     * @param origMin the original minimum of the range
+     * @param origMax the original maximum of the range
+     * @param min the new minimum of the range
+     * @param max the new maximum of the range
+     * @return a reference to this matrix
+     */
+    public Matrix normalize(double origMin, double origMax, double min, double max) {
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < getLength(); i++) {
+            backingArray[i] = ((double) backingArray[i] - origMin) * (max - min) / (origMax - origMin) + min;
+        }
+        return this;
+    }
+
+    /**
      * Gets the data in the vector in the array format
      * @return the data array
      */
@@ -138,7 +156,8 @@ public class Matrix extends Tensor<Double> {
      * @return the output matrix
      */
     public static Matrix multiply(Matrix a, Matrix b) {
-        assert a.getDimensions()[1] == b.getDimensions()[0];
+        if(a.getDimensions()[1] == b.getDimensions()[0])
+            throw new InvalidShapeException(a.toString(), b.toString());
 
         Matrix m = new Matrix(a.getRows(), b.getCols());
 
