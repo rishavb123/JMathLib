@@ -2,6 +2,8 @@ package io.bhagat.math.linearalgebra;
 
 import io.bhagat.math.exceptions.InvalidShapeException;
 
+import java.util.Arrays;
+
 public class Matrix extends Tensor<Double> {
 
     /**
@@ -190,6 +192,46 @@ public class Matrix extends Tensor<Double> {
      */
     public static Matrix multiply(Matrix a, Vector b) {
         return multiply(a, b.columnMatrix());
+    }
+
+    /**
+     * Adds two matricies
+     * @param a the first matrix
+     * @param b the second matrix
+     * @return the resulatant matrix
+     */
+    public static Matrix add(Matrix a, Matrix b) {
+        if(!Arrays.equals(a.getDimensions(), b.getDimensions()))
+            throw new InvalidShapeException(a.toString(), b.toString());
+        Matrix c = new Matrix(a.getDimensions()[0], a.getDimensions()[1]);
+
+        Object[] aArr = a.getBackingArray();
+        Object[] bArr = b.getBackingArray();
+        Object[] cArr = c.getBackingArray();
+        for(int i = 0; i < c.getLength(); i++)
+            cArr[i] = (double) aArr[i] + (double) bArr[i];
+
+        return c;
+    }
+
+    /**
+     * Subtracts two matricies
+     * @param a the first matrix
+     * @param b the second matrix
+     * @return the resulatant matrix
+     */
+    public static Matrix subtract(Matrix a, Matrix b) {
+        if(!Arrays.equals(a.getDimensions(), b.getDimensions()))
+            throw new InvalidShapeException(a.toString(), b.toString());
+        Matrix c = new Matrix(a.getDimensions()[0], a.getDimensions()[1]);
+
+        Object[] aArr = a.getBackingArray();
+        Object[] bArr = b.getBackingArray();
+        Object[] cArr = c.getBackingArray();
+        for(int i = 0; i < c.getLength(); i++)
+            cArr[i] = (double) aArr[i] - (double) bArr[i];
+
+        return c;
     }
 
     /**

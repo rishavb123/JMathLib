@@ -1,5 +1,9 @@
 package io.bhagat.math.linearalgebra;
 
+import io.bhagat.math.exceptions.InvalidShapeException;
+
+import java.util.Arrays;
+
 public class Vector extends Tensor<Double> {
 
     /**
@@ -119,6 +123,36 @@ public class Vector extends Tensor<Double> {
      */
     public static Matrix outer(Vector a, Vector b) {
         return Matrix.multiply(a.columnMatrix(), b.rowMatrix());
+    }
+
+    /**
+     * Adds two vectors together
+     * @param a the first vector
+     * @param b the second vector
+     * @return the resultant vector
+     */
+    public static Vector add(Vector a, Vector b) {
+        if(!Arrays.equals(a.getDimensions(), b.getDimensions()))
+            throw new InvalidShapeException(a.toString(), b.toString());
+        Vector c = new Vector(a.getLength());
+        for(int i = 0; i < a.getLength(); i++)
+            c.set(a.get(i) + b.get(i), i);
+        return c;
+    }
+
+    /**
+     * Subtracts two vectors together
+     * @param a the first vector
+     * @param b the second vector
+     * @return the resultant vector
+     */
+    public static Vector subtract(Vector a, Vector b) {
+        if(!Arrays.equals(a.getDimensions(), b.getDimensions()))
+            throw new InvalidShapeException(a.toString(), b.toString());
+        Vector c = new Vector(a.getLength());
+        for(int i = 0; i < a.getLength(); i++)
+            c.set(a.get(i) - b.get(i), i);
+        return c;
     }
 
 }
