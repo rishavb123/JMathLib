@@ -62,6 +62,14 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     }
 
     /**
+     * Converts the vector into a matrix column
+     * @return the matrix with one column
+     */
+    public Matrix toMatrix() {
+        return columnMatrix();
+    }
+
+    /**
      * Normalizes the vector from one range to another
      * @param origMin the original minimum of the range
      * @param origMax the original maximum of the range
@@ -122,10 +130,18 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
      * @return the magnitude of the vector
      */
     public double magnitude() {
+        return Math.sqrt(squaredMagnitude());
+    }
+
+    /**
+     * Calculates the squared magnitude of the vector
+     * @return the squared magnitude of the vector
+     */
+    public double squaredMagnitude() {
         double sum = 0;
         for(Double x: this)
             sum += x * x;
-        return Math.sqrt(sum);
+        return sum;
     }
 
     /**
@@ -198,6 +214,18 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     }
 
     /**
+     * Generates a simple unit vector
+     * @param index this value will be 1
+     * @param size the size of the unit vector
+     * @return the unit vector
+     */
+    public static Vector generateUnitVector(int index, int size) {
+        Vector v = new Vector(size);
+        v.set(1.0, index);
+        return v;
+    }
+
+    /**
      * Calculates the dot product of the two input vectors
      * @param a the first input vector
      * @param b the second input vector
@@ -206,6 +234,8 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     public static double dot(Vector a, Vector b) {
         return inner(a, b);
     }
+
+    // TODO: implement the cross product
 
     /**
      * Calculates the inner product of the two input vectors
@@ -301,6 +331,40 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         return a.clone().scale(1/c);
     }
 
+    /**
+     * Checks if two vectors are orthogonal
+     * @param a the first vector
+     * @param b the second vector
+     * @return whether it is orthogonal or not
+     */
+    public static boolean orthogonal(Vector a, Vector b) {
+        return Vector.dot(a, b) == 0;
+    }
+
+    /**
+     * Orthogonalize the set of input vectors
+     * @param x the set of input vectors
+     * @return the orthogonalized vectors
+     */
+    public static Vector[] orthogonalize(Vector[] x) {
+        Vector[] v = new Vector[x.length];
+        for(int y = 0; y < v.length; y++) {
+            final int k = y;
+            Vector sum = new Vector(x[k].getLength());
+            for (int j = 0; j < k; j++) {
+                final int i = j;
+                sum.mapFromEntries(entry -> entry.getVal() +
+                        v[i].get(entry.getIndex()) * Vector.dot(x[k], v[i]) / v[i].squaredMagnitude()
+                );
+            }
+            v[k] = Vector.subtract(x[k], sum);
+        }
+        return v;
+    }
+
+    /**
+     * A class to hold the entries of a vector
+     */
     public class VectorEntry {
 
         private int index;
