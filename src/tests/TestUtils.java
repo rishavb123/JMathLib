@@ -13,6 +13,8 @@ public class TestUtils {
      */
     public static <T> void check(String tag, T value, T expected) {
         if(!withinTest) {
+            System.out.print("---------------------------------------------------------------------------------------");
+            System.out.println("-------------------------------------------------------------------------------------");
             System.out.println(
                     pad("Label", 50) + "| "
                     + pad("Value", 50) + "| "
@@ -46,6 +48,9 @@ public class TestUtils {
     }
 
     private static String pad(String string, int length) {
+        if(string.length() > length) {
+            string = string.substring(0, length - 3) + "...";
+        }
         return String.format("%-"+length+ "s", string);
     }
 

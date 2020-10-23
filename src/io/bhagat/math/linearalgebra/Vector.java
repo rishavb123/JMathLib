@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 public class Vector extends Tensor<Double> implements Comparable<Vector>{
 
+    private VectorEntry[] vectorEntries;
+
     /**
      * Creates a vector with a definite length
      * @param length the length
@@ -136,6 +138,29 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         return sum;
     }
 
+    /**
+     * Gets a vector entry object that is linked to this vector
+     * @param i the index
+     * @return the vector entry object
+     */
+    public VectorEntry getVectorEntry(int i) {
+        if(vectorEntries == null)
+            vectorEntries = new VectorEntry[getLength()];
+        if(vectorEntries[i] == null)
+            vectorEntries[i] = new VectorEntry(i);
+        return vectorEntries[i];
+    }
+
+    /**
+     * Gets an array of vector entry objects, each corresponding to the index it is at in the array
+     * @return the array of entries
+     */
+    public VectorEntry[] getVectorEntries() {
+        VectorEntry[] entries = new VectorEntry[getLength()];
+        for(int i = 0; i < getLength(); i++) entries[i] = getVectorEntry(i);
+        return entries;
+    }
+
     @Override
     public int compareTo(@NotNull Vector v) {
         return Double.compare(magnitude(), v.magnitude());
@@ -261,6 +286,59 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
      */
     public static Vector divide(Vector a, double c) {
         return a.clone().scale(1/c);
+    }
+
+    public class VectorEntry {
+
+        private int index;
+
+        /**
+         * Constructs a vector index object
+         * @param index the index in the vector
+         */
+        public VectorEntry(int index) {
+            this.index = index;
+        }
+
+        /**
+         * Gets the value
+         * @return the value
+         */
+        public double getVal() {
+            return get(index);
+        }
+
+        /**
+         * Gets the index
+         * @return the index
+         */
+        public int getIndex() {
+            return index;
+        }
+
+        /**
+         * Gets the parent vector
+         * @return the parent vector
+         */
+        public Vector getParent() {
+            return Vector.this;
+        }
+
+        /**
+         * String representation of the object
+         * @return the string representation
+         */
+        public String toString() {
+            return getParent() + "[" + index + "] = " + getVal();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(!(obj instanceof VectorEntry))
+                return false;
+            VectorEntry o = (VectorEntry) obj;
+            return index == o.getIndex() && getParent() == o.getParent();
+        }
     }
 
 }
