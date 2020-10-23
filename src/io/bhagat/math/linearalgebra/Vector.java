@@ -213,6 +213,11 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         return arr;
     }
 
+    private static void assertShape(Vector a, Vector b) {
+        if(!Tensor.equalShape(a, b))
+            throw new InvalidShapeException(a.toString(), b.toString());
+    }
+
     /**
      * Generates a simple unit vector
      * @param index this value will be 1
@@ -244,7 +249,7 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
      * @return the scalar output
      */
     public static double inner(Vector a, Vector b) {
-        assert Tensor.equalShape(a, b);
+        assertShape(a, b);
         int sum = 0;
         for(int i = 0; i < a.getLength(); i++)
             sum += a.get(i) * b.get(i);
@@ -268,8 +273,7 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
      * @return the resultant vector
      */
     public static Vector add(Vector a, Vector b) {
-        if(!Arrays.equals(a.getDimensions(), b.getDimensions()))
-            throw new InvalidShapeException(a.toString(), b.toString());
+        assertShape(a, b);
         Vector c = new Vector(a.getLength());
         for(int i = 0; i < a.getLength(); i++)
             c.set(a.get(i) + b.get(i), i);
@@ -283,8 +287,7 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
      * @return the resultant vector
      */
     public static Vector subtract(Vector a, Vector b) {
-        if(!Arrays.equals(a.getDimensions(), b.getDimensions()))
-            throw new InvalidShapeException(a.toString(), b.toString());
+        assertShape(a, b);
         Vector c = new Vector(a.getLength());
         for(int i = 0; i < a.getLength(); i++)
             c.set(a.get(i) - b.get(i), i);
