@@ -102,7 +102,7 @@ public class Tensor<T> implements Iterable<T>{
      */
     public Tensor<T> map(Function<T, T> function) {
         for(int i = 0; i < backingArray.length; i++)
-            backingArray[i] = function.run((T) backingArray[i]);
+            backingArray[i] = function.f((T) backingArray[i]);
         return this;
     }
 

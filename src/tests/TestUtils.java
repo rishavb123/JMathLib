@@ -3,6 +3,8 @@ package tests;
 public class TestUtils {
 
     public static boolean withinTest = false;
+    public static int passed = 0;
+    public static int total = 0;
 
     /**
      * Checks the results of a test
@@ -26,14 +28,16 @@ public class TestUtils {
         }
 
         String status = ConsoleColors.RED_BOLD_BRIGHT + "FAILED" + ConsoleColors.RESET;
+        total++;
         try {
             if(value == expected || value.equals(expected)) {
                 status = ConsoleColors.GREEN_BOLD_BRIGHT + "PASSED" + ConsoleColors.RESET;
+                passed++;
             }
         } catch(Exception e) {}
         System.out.println(
                 pad( tag, 50) + "| "
-                + pad(value.toString(), 50) + "| "
+                + pad(value + "", 50) + "| "
                 + pad(expected + " expected", 58) + "| "
                 + status
         );
@@ -44,7 +48,12 @@ public class TestUtils {
      */
     public static void endTest() {
         withinTest = false;
+        System.out.println(passed + "/" + total + ConsoleColors.GREEN_BOLD_BRIGHT + " PASSED" + ConsoleColors.RESET +
+                "; " + (total - passed) + "/" + total + ConsoleColors.RED_BOLD_BRIGHT + " FAILED" + ConsoleColors.RESET
+        );
         System.out.println();
+        total = 0;
+        passed = 0;
     }
 
     private static String pad(String string, int length) {

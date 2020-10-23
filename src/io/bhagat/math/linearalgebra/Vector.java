@@ -170,7 +170,7 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     public Vector mapFromEntries(Function<VectorEntry, Double> function) {
         Object[] backingArray = getBackingArray();
         for(int i = 0; i < getLength(); i++)
-            backingArray[i] = function.run(getVectorEntry(i));
+            backingArray[i] = function.f(getVectorEntry(i));
         return this;
     }
 

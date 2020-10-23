@@ -15,7 +15,7 @@ public class TestVector {
         TestUtils.check("Test vector subtraction", Vector.subtract(a, b), d);
         TestUtils.check("Test dot product", Vector.dot(a, b), -29.0);
         TestUtils.check("Test magnitude equality", a.magnitude(), b.magnitude());
-        TestUtils.check("Test sum", a.sum(), 9);
+        TestUtils.check("Test sum", a.sum(), 9.0);
         TestUtils.endTest();
 
         TestUtils.check("Test get vector entry", a.getVectorEntry(0), a.new VectorEntry(0));

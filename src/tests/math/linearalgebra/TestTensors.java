@@ -1,5 +1,6 @@
 package tests.math.linearalgebra;
 
+import io.bhagat.math.Function;
 import io.bhagat.math.linearalgebra.Tensor;
 import tests.TestUtils;
 
@@ -57,6 +58,26 @@ public class TestTensors {
         tensor5.set("World", 5);
         TestUtils.check("Flatten Test", tensor2.flatten(), tensor5);
         TestUtils.endTest();
+
+        Tensor<Integer> tensor6 = new Tensor<>(new Integer[][] {
+                {1, 2, 3},
+                {2, 4, 6},
+                {3, 6, 9}
+        });
+        Tensor<Integer> tensor7 = new Tensor<>(new Integer[][] {
+                {3, 4, 5},
+                {4, 6, 8},
+                {5, 8, 11}
+        });
+        TestUtils.check("Function Mapping Test", tensor6.map(new Function<>() {
+            @Override
+            public Integer f(Integer x) {
+                return x + 2;
+            }
+        }), tensor7);
+        TestUtils.check("Function Mapping Test with Lambda", tensor6.map(x -> x + 2), tensor6);
+        TestUtils.endTest();
+
 
     }
 }
