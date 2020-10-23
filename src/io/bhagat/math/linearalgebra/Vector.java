@@ -1,10 +1,11 @@
 package io.bhagat.math.linearalgebra;
 
 import io.bhagat.math.exceptions.InvalidShapeException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class Vector extends Tensor<Double> {
+public class Vector extends Tensor<Double> implements Comparable<Vector>{
 
     /**
      * Creates a vector with a definite length
@@ -71,6 +72,73 @@ public class Vector extends Tensor<Double> {
             backingArray[i] = ((double) backingArray[i] - origMin) * (max - min) / (origMax - origMin) + min;
         }
         return this;
+    }
+
+    /**
+     * Scales the vector by a scalar
+     * @param c the scalar constant
+     * @return a reference to this vector
+     */
+    public Vector scale(double c) {
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < getLength(); i++) {
+            backingArray[i] = (double) backingArray[i] * c;
+        }
+        return this;
+    }
+
+    /**
+     * Translates the vector by a scalar
+     * @param c the scalar constant
+     * @return a reference to this vector
+     */
+    public Vector translate(double c) {
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < getLength(); i++) {
+            backingArray[i] = (double) backingArray[i] + c;
+        }
+        return this;
+    }
+
+    /**
+     * Fills the Vector with random values from min to max
+     * @param min the minimum random number
+     * @param max the maximum random number
+     * @return a reference to this vector
+     */
+    public Vector randomize(double min, double max)
+    {
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < getLength(); i++)
+            backingArray[i] = Math.random()*(max - min) + min;
+        return this;
+    }
+
+    /**
+     * Calculates the magnitude of the vector
+     * @return the magnitude of the vector
+     */
+    public double magnitude() {
+        double sum = 0;
+        for(Double x: this)
+            sum += x * x;
+        return Math.sqrt(sum);
+    }
+
+    /**
+     * Calculates the sum of the elements in the vector
+     * @return the sum of the elements in the vector
+     */
+    public double sum() {
+        double sum = 0;
+        for(Double x: this)
+            sum += x;
+        return sum;
+    }
+
+    @Override
+    public int compareTo(@NotNull Vector v) {
+        return Double.compare(magnitude(), v.magnitude());
     }
 
     @Override
@@ -153,6 +221,46 @@ public class Vector extends Tensor<Double> {
         for(int i = 0; i < a.getLength(); i++)
             c.set(a.get(i) - b.get(i), i);
         return c;
+    }
+
+    /**
+     * Adds a scalar to a vector (element-wise)
+     * @param a the vector
+     * @param c the scalar
+     * @return the resultant vector
+     */
+    public static Vector add(Vector a, double c) {
+        return a.clone().translate(c);
+    }
+
+    /**
+     * Subtracts a scalar from a vector (element-wise)
+     * @param a the vector
+     * @param c the scalar
+     * @return the resultant vector
+     */
+    public static Vector subtract(Vector a, double c) {
+        return a.clone().translate(-c);
+    }
+
+    /**
+     * Multiplies a scalar with a vector
+     * @param a the vector
+     * @param c the scalar
+     * @return the resultant vector
+     */
+    public static Vector multiply(Vector a, double c) {
+        return a.clone().scale(c);
+    }
+
+    /**
+     * Divides a scalar from a vector (element-wise)
+     * @param a the vector
+     * @param c the scalar
+     * @return the resultant vector
+     */
+    public static Vector divide(Vector a, double c) {
+        return a.clone().scale(1/c);
     }
 
 }
