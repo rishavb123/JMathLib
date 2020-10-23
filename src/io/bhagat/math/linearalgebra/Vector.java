@@ -344,6 +344,7 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         return Vector.dot(a, b) == 0;
     }
 
+    // TODO: look over this method and its tests since they are not always working
     /**
      * Orthogonalize the set of input vectors
      * @param x the set of input vectors
