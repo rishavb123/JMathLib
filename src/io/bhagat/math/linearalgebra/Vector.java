@@ -1,5 +1,6 @@
 package io.bhagat.math.linearalgebra;
 
+import io.bhagat.math.Function;
 import io.bhagat.math.exceptions.InvalidShapeException;
 import org.jetbrains.annotations.NotNull;
 
@@ -159,6 +160,18 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         VectorEntry[] entries = new VectorEntry[getLength()];
         for(int i = 0; i < getLength(); i++) entries[i] = getVectorEntry(i);
         return entries;
+    }
+
+    /**
+     * Maps a function onto each element in the vector
+     * @param function a function that receives a vector entry
+     * @return a reference to this vector
+     */
+    public Vector mapFromEntries(Function<VectorEntry, Double> function) {
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < getLength(); i++)
+            backingArray[i] = function.run(getVectorEntry(i));
+        return this;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package io.bhagat.math.linearalgebra;
 
+import io.bhagat.math.Function;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -91,6 +93,17 @@ public class Tensor<T> implements Iterable<T>{
         T temp = (T) backingArray[idx];
         backingArray[idx] = obj;
         return temp;
+    }
+
+    /**
+     * Maps a function onto the tensor
+     * @param function the function to map
+     * @return a reference to this tensor
+     */
+    public Tensor<T> map(Function<T, T> function) {
+        for(int i = 0; i < backingArray.length; i++)
+            backingArray[i] = function.run((T) backingArray[i]);
+        return this;
     }
 
     /**
@@ -273,6 +286,17 @@ public class Tensor<T> implements Iterable<T>{
             temp = arr[0];
         }
         return dim.stream().mapToInt(i -> i).toArray();
+    }
+
+    /**
+     * Maps a function onto a tensor
+     * @param tensor the tensor
+     * @param function the function to map
+     * @param <T> the type of the tensor
+     * @return the resultant tensor
+     */
+    public static <T> Tensor<T> map(Tensor<T> tensor, Function<T, T> function) {
+        return tensor.clone().map(function);
     }
 
     public static boolean equalShape(Tensor<?> a, Tensor<?> b) {
