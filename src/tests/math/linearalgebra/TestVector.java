@@ -27,13 +27,10 @@ public class TestVector {
         Vector v3 = new Vector(3, 3, 3, 9);
         Vector[] arr = {v1, v2, v3};
         Vector[] output = Vector.orthogonalize(arr);
-        for(Vector v: output)
-            System.out.println(v);
-        System.out.println(Vector.dot(v2, v3));
 
-        TestUtils.check("v1 _|_ v2", Vector.orthogonal(output[0], output[1]), true);
-        TestUtils.check("v2 _|_ v3", Vector.orthogonal(output[1], output[2]), true);
-        TestUtils.check("v1 _|_ v3", Vector.orthogonal(output[0], output[2]), true);
+        TestUtils.check("u1 _|_ u2", Vector.orthogonal(output[0], output[1]), true);
+        TestUtils.check("u2 _|_ u3", Vector.orthogonal(output[1], output[2]), true);
+        TestUtils.check("u1 _|_ u3", Vector.orthogonal(output[0], output[2]), true);
         TestUtils.endTest();
 
         Vector e = new Vector(1, 2, 3);

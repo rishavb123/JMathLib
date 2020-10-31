@@ -1,5 +1,6 @@
 package io.bhagat.math.linearalgebra;
 
+import io.bhagat.math.Constants;
 import io.bhagat.math.Function;
 import io.bhagat.math.exceptions.InvalidShapeException;
 import org.jetbrains.annotations.NotNull;
@@ -289,9 +290,10 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
      */
     public static double inner(Vector a, Vector b) {
         assertShape(a, b);
-        int sum = 0;
-        for(int i = 0; i < a.getLength(); i++)
+        double sum = 0;
+        for(int i = 0; i < a.getLength(); i++) {
             sum += a.get(i) * b.get(i);
+        }
         return sum;
     }
 
@@ -380,10 +382,9 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
      * @return whether it is orthogonal or not
      */
     public static boolean orthogonal(Vector a, Vector b) {
-        return Vector.dot(a, b) == 0;
+        return Vector.dot(a, b) < Constants.EPSILON;
     }
 
-    // TODO: look over this method and its tests since they are not always working
     /**
      * Orthogonalize the set of input vectors
      * @param x the set of input vectors
@@ -394,11 +395,8 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         for(int y = 0; y < v.length; y++) {
             final int k = y;
             Vector sum = new Vector(x[k].getLength());
-            for (int j = 0; j < k; j++) {
-                final int i = j;
-                sum.mapFromEntries(entry -> entry.getVal() +
-                        v[i].get(entry.getIndex()) * Vector.dot(x[k], v[i]) / v[i].squaredMagnitude()
-                );
+            for (int i = 0; i < k; i++) {
+                sum.add(Vector.multiply(v[i], Vector.dot(x[k], v[i]) / v[i].squaredMagnitude()));
             }
             v[k] = Vector.subtract(x[k], sum);
         }
@@ -489,7 +487,6 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
 
             for(int i = 0; i < topRow.length; i++)
             {
-                System.out.println(topRow[i]);
                 sum.add(topRow[i].clone().scale(Math.pow(-1, i) * internalMatrix.clone().removeColumn(i).determinant()));
             }
 
