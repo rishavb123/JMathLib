@@ -2,7 +2,6 @@ package io.bhagat.math.linearalgebra;
 
 import io.bhagat.math.Function;
 import io.bhagat.math.exceptions.InvalidShapeException;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -270,7 +269,7 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     }
 
     @Override
-    public int compareTo(@NotNull Matrix o) {
+    public int compareTo(Matrix o) {
         return Double.compare(determinant(), o.determinant());
     }
 
@@ -354,6 +353,12 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         return multiply(a, b.columnMatrix());
     }
 
+    /**
+     * Calculates the hadamard (elementwise product) of two matricies
+     * @param a the first matrix
+     * @param b the second matrix
+     * @return the resultant matrix
+     */
     public static Matrix hadamardProduct(Matrix a, Matrix b) {
         assertShape(a, b);
         Matrix c = new Matrix(a.getRows(), a.getCols());
@@ -428,8 +433,8 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
      */
     public class MatrixEntry {
 
-        private int row;
-        private int col;
+        private final int row;
+        private final int col;
 
         /**
          * Constructs a matrix index object

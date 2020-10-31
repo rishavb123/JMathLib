@@ -2,6 +2,7 @@ package io.bhagat.math.linearalgebra;
 
 import io.bhagat.math.Function;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -12,11 +13,12 @@ import java.util.Objects;
  * A class for multi dimensional tensors tensors as arrays
  * @param <T> the tensor type
  */
-public class Tensor<T> implements Iterable<T>{
+@SuppressWarnings("unchecked")
+public class Tensor<T> implements Iterable<T>, Serializable {
 
-    private int rank;
-    private int[] dimensions;
-    private int[] multipliers;
+    private final int rank;
+    private final int[] dimensions;
+    private final int[] multipliers;
     private Object[] backingArray;
     private int length;
 
@@ -79,7 +81,7 @@ public class Tensor<T> implements Iterable<T>{
             length *= d;
         Object[] newBackingArray = new Object[length];
         System.arraycopy(backingArray, toBackingArrayPos(pos), newBackingArray, 0, newBackingArray.length);
-        return new Tensor<T>(newBackingArray, newDim);
+        return new Tensor<>(newBackingArray, newDim);
     }
 
     /**
@@ -111,17 +113,18 @@ public class Tensor<T> implements Iterable<T>{
      * @return the array of all the elements
      */
     public Tensor<T> flatten() {
-        Object[] backingArrayCopy = (T[]) new Object[backingArray.length];
+        Object[] backingArrayCopy = new Object[backingArray.length];
         System.arraycopy(backingArray, 0, backingArrayCopy, 0, backingArrayCopy.length);
-        return new Tensor<T>(backingArrayCopy, new int[] { length });
+        return new Tensor<>(backingArrayCopy, new int[] { length });
     }
 
     /**
      * Creates a clone of this tensor with the same data and dimensions with new memory allocation
      * @return the cloned tensor
      */
+    @Override
     public Tensor<T> clone() {
-        T[] backingArrayCopy = (T[]) new Object[backingArray.length];
+        Object[] backingArrayCopy = new Object[backingArray.length];
         int[] dimensionsCopy = new int[dimensions.length];
         System.arraycopy(backingArray, 0, backingArrayCopy, 0, backingArrayCopy.length);
         System.arraycopy(dimensions, 0, dimensionsCopy, 0, dimensionsCopy.length);
@@ -133,7 +136,7 @@ public class Tensor<T> implements Iterable<T>{
      * @return the iterator
      */
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
+        return new Iterator<>() {
 
             int idx = 0;
 
