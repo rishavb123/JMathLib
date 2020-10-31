@@ -1,10 +1,11 @@
 package io.bhagat.math.linearalgebra;
 
 import io.bhagat.math.exceptions.InvalidShapeException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class Matrix extends Tensor<Double> {
+public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
 
     /**
      * Creates a matrix with a defined size
@@ -66,6 +67,18 @@ public class Matrix extends Tensor<Double> {
     }
 
     /**
+     * Sets a row to a specific vector
+     * @param r the row index
+     * @param v the vector
+     */
+    public void setRow(int r, Vector v) {
+        if (v.getLength() != getCols()) {
+            throw new InvalidShapeException(v.toString());
+        }
+        System.arraycopy(v.getBackingArray(), 0, getBackingArray(), r * getCols(), getCols());
+    }
+
+    /**
      * Gets a specific column
      * @param c the column index
      * @return the column vector
@@ -76,6 +89,19 @@ public class Matrix extends Tensor<Double> {
         for(int i = 0; i < dim[0]; i++)
             vec.set(get(i, c), i);
         return vec;
+    }
+
+    /**
+     * Sets a column to a specific vector
+     * @param c the column index
+     * @param v the vector
+     */
+    public void setCol(int c, Vector v) {
+        if (v.getLength() != getRows()) {
+            throw new InvalidShapeException(v.toString());
+        }
+        for (int i = 0; i < v.getLength(); i++)
+            set(v.get(i), i, c);
     }
 
     /**
@@ -129,6 +155,64 @@ public class Matrix extends Tensor<Double> {
             for(int j = 0; j < dim[1]; j++)
                 data[j][i] = get(i, j);
         return new Matrix(data);
+    }
+
+    /**
+     * Removes the row specified by the index and returns the resultant matrix
+     * @param index the index
+     * @return the new matrix with the removed row
+     */
+    public Matrix removeRow(int index) {
+        if (index < 0 || index >= getRows()) {
+            throw new IndexOutOfBoundsException(index + " is out of bounds for matrix of dimensions " + getRows()
+                    + ", " + getCols());
+        }
+        Vector[] newRows = new Vector[getRows() - 1];
+        Vector[] rows = getRowVectors();
+        System.arraycopy(rows, 0, newRows, 0, index);
+        System.arraycopy(rows, index + 1, newRows, index, getRows() - index - 1);
+        return new Matrix(newRows);
+    }
+
+    /**
+     * Removes the column specified by the index and returns the resultant matrix
+     * @param index the index
+     * @return the new matrix with removed column
+     */
+    public Matrix removeColumn(int index) {
+        return transpose().removeRow(index).transpose();
+    }
+
+    /**
+     * Checks if the matrix is a square matrix
+     * @return whether the matrix is a square matrix
+     */
+    public boolean isSquare() {
+        return getRows() == getCols();
+    }
+
+    public double determinant()
+    {
+        if(!isSquare())
+            throw new InvalidShapeException(toString());
+
+        if(getRows() == 1)
+            return get(0, 0);
+
+        double sum = 0;
+
+        for(int i = 0; i < getRows(); i++)
+        {
+            sum += Math.pow(-1, i) * get(0, i) * removeRow(0).removeColumn(i).determinant();
+        }
+
+        return sum;
+
+    }
+
+    @Override
+    public int compareTo(@NotNull Matrix o) {
+        return Double.compare(determinant(), o.determinant());
     }
 
     /**
@@ -209,6 +293,22 @@ public class Matrix extends Tensor<Double> {
      */
     public static Matrix multiply(Matrix a, Vector b) {
         return multiply(a, b.columnMatrix());
+    }
+
+    public static Matrix hadamardProduct(Matrix a, Matrix b) {
+        assertShape(a, b);
+        Matrix c = new Matrix(a.getRows(), a.getCols());
+        for (int i = 0; i < c.getRows(); i++) {
+            for (int j = 0; j < c.getCols(); j++) {
+                c.set(a.get(i, j) * b.get(i, j), i, j);
+            }
+        }
+        return c;
+    }
+
+    private static void assertShape(Matrix a, Matrix b) {
+        if(!Tensor.equalShape(a, b))
+            throw new InvalidShapeException(a.toString(), b.toString());
     }
 
     /**

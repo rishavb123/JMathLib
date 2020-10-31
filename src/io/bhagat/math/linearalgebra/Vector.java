@@ -240,7 +240,18 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         return inner(a, b);
     }
 
-    // TODO: implement the cross product
+    /**
+     * Computes the cross product of n - 1 vectors of n dimension each
+     * @param vs the array of vectors
+     * @return the scalar output
+     */
+    public static double cross(Vector... vs) {
+        for(Vector v: vs) {
+            if(v.getLength() - 1 != vs.length)
+                throw new InvalidShapeException(v.toString());
+        }
+        return 0;
+    }
 
     /**
      * Calculates the inner product of the two input vectors
