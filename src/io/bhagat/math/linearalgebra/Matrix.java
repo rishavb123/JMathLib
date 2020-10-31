@@ -40,6 +40,23 @@ public class Matrix extends Tensor<Double> {
     }
 
     /**
+     * Creates a matrix from an array of vectors
+     * @param vs the array of vectors
+     */
+    public Matrix(Vector... vs) {
+        this(vs.length, vs[0].getLength());
+        for(Vector v: vs) {
+            if (v.getLength() != vs[0].getLength()) {
+                throw new InvalidShapeException(vs[0].toString(), v.toString());
+            }
+        }
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < vs.length; i++) {
+            System.arraycopy(vs[i].getBackingArray(), 0, backingArray, i * getCols(), getCols());
+        }
+    }
+
+    /**
      * Gets a specific row
      * @param r the row index
      * @return the row vector
