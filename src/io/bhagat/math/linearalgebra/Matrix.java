@@ -295,6 +295,11 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         return cofactor().transpose().scale(1/determinant());
     }
 
+    // TODO: QR Factorization
+    // TODO: LU Factorization
+    // TODO: Eigen Problem
+    // TODO: Convolutions
+
     /**
      * Scales the matrix by a scalar
      * @param c the scalar constant
@@ -459,6 +464,22 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
                 m.set(Vector.dot(aRows[i], bCols[j]), i, j);
 
         return m;
+    }
+
+    /**
+     * Takes the dot product across two matricies
+     * @param a the first matrix
+     * @param b the second matrix
+     * @return the dot product
+     */
+    public static double dot(Matrix a, Matrix b) {
+        assertShape(a, b);
+        double sum = 0;
+        Object[] aBackingArray = a.getBackingArray();
+        Object[] bBackingArray = b.getBackingArray();
+        for(int i = 0; i < a.getLength(); i++)
+            sum += (Double) aBackingArray[i] * (Double) bBackingArray[i];
+        return sum;
     }
 
     /**
