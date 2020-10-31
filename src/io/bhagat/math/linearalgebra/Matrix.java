@@ -119,6 +119,16 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     }
 
     /**
+     * Sets the rows vectors of the matrix
+     * @param rows the rows vectors
+     */
+    public void setRowVectors(Vector[] rows) {
+        assert rows.length == getRows();
+        for (int i = 0; i < getRows(); i++)
+            setRow(i, rows[i]);
+    }
+
+    /**
      * Gets the columns of the matrix
      * @return the array of all the column vectors
      */
@@ -128,6 +138,16 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         for(int i = 0; i < dim[1]; i++)
             vectors[i] = getColVector(i);
         return vectors;
+    }
+
+    /**
+     * Sets the column vectors of the matrix
+     * @param cols the column vectors
+     */
+    public void setColVectors(Vector[] cols) {
+        assert cols.length == getCols();
+        for (int i = 0; i < getCols(); i++)
+            setCol(i, cols[i]);
     }
 
     /**
@@ -250,6 +270,82 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
 
         return sum;
 
+    }
+
+    /**
+     * finds the cofactor of the matrix
+     * @return the cofactor matrix
+     */
+    public Matrix cofactor()
+    {
+        if(!isSquare())
+            throw new InvalidShapeException("The matrix is not a square matrix");
+        Matrix C = new Matrix(getRows(), getCols());
+        for(int i = 0; i < getRows(); i++)
+            for(int j = 0; j < getCols(); j++)
+                C.set((((i + j) % 2 == 0)? 1 : -1) * removeRow(i).removeColumn(j).determinant(), i, j);
+        return C;
+    }
+
+    /**
+     * Calculates the inverse matrix of this matrix
+     * @return the inverse of this matrix
+     */
+    public Matrix inverse() {
+        return cofactor().transpose().scale(1/determinant());
+    }
+
+    /**
+     * Scales the matrix by a scalar
+     * @param c the scalar constant
+     * @return a reference to this matrix
+     */
+    public Matrix scale(double c) {
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < getLength(); i++) {
+            backingArray[i] = (double) backingArray[i] * c;
+        }
+        return this;
+    }
+
+    /**
+     * Translates the matrix by a scalar
+     * @param c the scalar constant
+     * @return a reference to this matrix
+     */
+    public Matrix translate(double c) {
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < getLength(); i++) {
+            backingArray[i] = (double) backingArray[i] + c;
+        }
+        return this;
+    }
+
+    /**
+     * converts the matrix to row echelon form
+     * @return the matrix in row echelon form
+     */
+    public Matrix rowEchelonForm()
+    {
+        Matrix ref = clone();
+        Vector[] rows = ref.getRowVectors();
+        for(int i = 0; i < getCols() - 1; i++)
+            for(int j = i + 1; j < rows.length; j++)
+                rows[j].subtract(rows[i].clone().scale(1/rows[i].get(i)).scale(rows[j].get(i)));
+        return new Matrix(rows);
+    }
+
+    /**
+     * converts the matrix to reduced row echelon form
+     * @return the matrix in reduced row echelon form
+     */
+    public Matrix reducedRowEchelonForm()
+    {
+        Matrix ref = rowEchelonForm();
+        Vector[] rows = ref.getRowVectors();
+        for(int i = 0; i < getRows(); i++)
+            rows[i].scale(1/rows[i].get(i));
+        return ref;
     }
 
     /**

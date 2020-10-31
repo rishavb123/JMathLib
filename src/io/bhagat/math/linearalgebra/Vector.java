@@ -129,6 +129,15 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     }
 
     /**
+     * Subtracts a vector from this vector
+     * @param v the vector to subtract
+     * @return a reference to this vector
+     */
+    public Vector subtract(Vector v) {
+        return add(v.clone().scale(-1));
+    }
+
+    /**
      * Multiplies a vector to this vector elementwise
      * @param v the vector to multiply
      * @return a reference to this vector
