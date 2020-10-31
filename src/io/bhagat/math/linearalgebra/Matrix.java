@@ -200,6 +200,28 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     }
 
     /**
+     * Fills the Matrix with random values from min to max
+     * @param min the minimum random number
+     * @param max the maximum random number
+     * @return a reference to this vector
+     */
+    public Matrix randomize(double min, double max)
+    {
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < getLength(); i++)
+            backingArray[i] = Math.random()*(max - min) + min;
+        return this;
+    }
+
+    /**
+     * Generates a random matrix with values from 0 to 1
+     * @return a reference to this vector
+     */
+    public Matrix randomize() {
+        return randomize(0, 1);
+    }
+
+    /**
      * Checks if the matrix is a square matrix
      * @return whether the matrix is a square matrix
      */
