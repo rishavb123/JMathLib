@@ -167,8 +167,8 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
      */
     public Matrix removeRow(int index) {
         if (index < 0 || index >= getRows()) {
-            throw new IndexOutOfBoundsException(index + " is out of bounds for matrix of dimensions " + getRows()
-                    + ", " + getCols());
+            throw new IndexOutOfBoundsException("Row " + index + " is out of bounds for matrix of dimensions "
+                    + getRows() + ", " + getCols());
         }
         Vector[] newRows = new Vector[getRows() - 1];
         Vector[] rows = getRowVectors();
@@ -183,7 +183,21 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
      * @return the new matrix with removed column
      */
     public Matrix removeColumn(int index) {
-        return transpose().removeRow(index).transpose();
+        if (index < 0 || index >= getCols()) {
+            throw new IndexOutOfBoundsException("Column " + index + " is out of bounds for matrix of dimensions "
+                    + getRows() + ", " + getCols());
+        }
+        Matrix m = new Matrix(getRows(), getCols() - 1);
+        Object[] mBackingArray = m.getBackingArray();
+        Object[] backingArray = getBackingArray();
+        int j = 0;
+        for(int i = 0; i < backingArray.length; i++) {
+            if (i % getCols() != index) {
+                mBackingArray[j] = backingArray[i];
+                j++;
+            }
+        }
+        return m;
     }
 
     /**
