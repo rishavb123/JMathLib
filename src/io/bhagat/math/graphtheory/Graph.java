@@ -1,5 +1,7 @@
 package io.bhagat.math.graphtheory;
 
+import io.bhagat.math.linearalgebra.Matrix;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -78,6 +80,8 @@ public class Graph<T> {
             }
         }
     }
+
+    // TODO: Adjacency Matrix
 
     /**
      * Sets the head of the node
