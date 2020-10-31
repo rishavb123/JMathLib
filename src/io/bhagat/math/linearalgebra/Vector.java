@@ -155,6 +155,14 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     }
 
     /**
+     * Generates a random vector with values from 0 to 1
+     * @return a reference to this vector
+     */
+    public Vector randomize() {
+        return randomize(0, 1);
+    }
+
+    /**
      * Calculates the magnitude of the vector
      * @return the magnitude of the vector
      */
@@ -402,6 +410,8 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         }
         return v;
     }
+
+
 
     /**
      * A class to hold the entries of a vector
