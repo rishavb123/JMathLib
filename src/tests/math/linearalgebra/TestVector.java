@@ -35,6 +35,11 @@ public class TestVector {
         TestUtils.check("v2 _|_ v3", Vector.orthogonal(output[1], output[2]), true);
         TestUtils.check("v1 _|_ v3", Vector.orthogonal(output[0], output[2]), true);
         TestUtils.endTest();
+
+        Vector e = new Vector(1, 2, 3);
+        Vector f = new Vector(1, 5, 7);
+        TestUtils.check("e x f", Vector.cross(e, f), new Vector(-1, -4, 3));
+        TestUtils.endTest();
     }
 
 }

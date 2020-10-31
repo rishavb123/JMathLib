@@ -16,6 +16,10 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
      */
     public Vector(int length) {
         super(length);
+        Object[] backingArray = getBackingArray();
+        for(int i = 0; i < length; i++) {
+            backingArray[i] = 0.0;
+        }
     }
 
     /**
@@ -108,6 +112,30 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         for(int i = 0; i < getLength(); i++) {
             backingArray[i] = (double) backingArray[i] + c;
         }
+        return this;
+    }
+
+    /**
+     * Adds a vector to this vector
+     * @param v the vector to add
+     * @return a reference to this vector
+     */
+    public Vector add(Vector v) {
+        assertShape(this, v);
+        for(int i = 0; i < getLength(); i++)
+            set(v.get(i) + get(i), i);
+        return this;
+    }
+
+    /**
+     * Multiplies a vector to this vector elementwise
+     * @param v the vector to multiply
+     * @return a reference to this vector
+     */
+    public Vector hadamard(Vector v) {
+        assertShape(this, v);
+        for(int i = 0; i < getLength(); i++)
+            set(v.get(i) * get(i), i);
         return this;
     }
 
@@ -243,14 +271,14 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     /**
      * Computes the cross product of n - 1 vectors of n dimension each
      * @param vs the array of vectors
-     * @return the scalar output
+     * @return the vector output
      */
-    public static double cross(Vector... vs) {
+    public static Vector cross(Vector... vs) {
         for(Vector v: vs) {
             if(v.getLength() - 1 != vs.length)
                 throw new InvalidShapeException(v.toString());
         }
-        return 0;
+        return new CrossProductMatrix(vs).determinant();
     }
 
     /**
@@ -439,6 +467,35 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
             VectorEntry o = (VectorEntry) obj;
             return index == o.getIndex() && getParent() == o.getParent();
         }
+    }
+
+    private static class CrossProductMatrix {
+
+        private Matrix internalMatrix;
+        private Vector[] topRow;
+
+        private CrossProductMatrix(Vector[] vs)
+        {
+            topRow = new Vector[vs[0].getLength()];
+            for(int i = 0; i < topRow.length; i++)
+                topRow[i] = Vector.generateUnitVector(i, topRow.length);
+
+            internalMatrix = new Matrix(vs);
+        }
+
+        private Vector determinant()
+        {
+            Vector sum = new Vector(topRow[0].getLength());
+
+            for(int i = 0; i < topRow.length; i++)
+            {
+                System.out.println(topRow[i]);
+                sum.add(topRow[i].clone().scale(Math.pow(-1, i) * internalMatrix.clone().removeColumn(i).determinant()));
+            }
+
+            return sum;
+        }
+
     }
 
 }
