@@ -1,11 +1,14 @@
 package io.bhagat.math.linearalgebra;
 
+import io.bhagat.math.Function;
 import io.bhagat.math.exceptions.InvalidShapeException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
+
+    MatrixEntry[][] matrixEntries;
 
     /**
      * Creates a matrix with a defined size
@@ -191,6 +194,10 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         return getRows() == getCols();
     }
 
+    /**
+     * Calculates the determinant of a matrix
+     * @return the determinant
+     */
     public double determinant()
     {
         if(!isSquare())
@@ -208,6 +215,44 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
 
         return sum;
 
+    }
+
+    /**
+     * Gets a matrix entry object that is linked to this matrix
+     * @param r the row
+     * @param c the column
+     * @return the matrix entry object
+     */
+    public MatrixEntry getMatrixEntry(int r, int c) {
+        if (matrixEntries == null)
+            matrixEntries = new MatrixEntry[getRows()][getCols()];
+        if (matrixEntries[r][c] == null)
+            matrixEntries[r][c] = new MatrixEntry(r, c);
+        return matrixEntries[r][c];
+    }
+
+    /**
+     * Gets a two-dimensional array of matrix entry objects, each corresponding to an entry in the matrix
+     * @return the array of entries
+     */
+    public MatrixEntry[][] getMatrixEntries() {
+        MatrixEntry[][] entries = new MatrixEntry[getRows()][getCols()];
+        for (int r = 0; r < getRows(); r++)
+            for (int c = 0; c < getCols(); c++)
+                entries[r][c] = getMatrixEntry(r, c);
+        return entries;
+    }
+
+    /**
+     * Maps a function onto each element in the vector
+     * @param function a function that receives a matrix entry
+     * @return a reference to this matrix
+     */
+    public Matrix mapFromEntries(Function<MatrixEntry, Double> function) {
+        Object[] backingArray = getBackingArray();
+        for (int i = 0; i < getLength(); i++)
+            backingArray[i] = function.f(getMatrixEntry(i / getCols(), i % getCols()));
+        return this;
     }
 
     @Override
@@ -362,6 +407,82 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         for(int i = 0; i < size; i++)
             m.set(1.0, i, i);
         return m;
+    }
+
+    /**
+     * A class to hold the entries of a vector
+     */
+    public class MatrixEntry {
+
+        private int row;
+        private int col;
+
+        /**
+         * Constructs a matrix index object
+         * @param row the row in the matrix
+         * @param col the col in the matrix
+         */
+        public MatrixEntry(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+
+        /**
+         * Gets the value
+         * @return the value
+         */
+        public double getVal() {
+            return get(row, col);
+        }
+
+        /**
+         * Sets the value in the parent matrix
+         * @param val the value to set it to
+         */
+        public void setVal(double val) {
+            set(val, row, col);
+        }
+
+        /**
+         * Gets the row
+         * @return the row
+         */
+        public int getRow() {
+            return row;
+        }
+
+        /**
+         * Gets the column
+         * @return the column
+         */
+        public int getCol() {
+            return col;
+        }
+
+        /**
+         * Gets the parent matrix
+         * @return the parent matrix
+         */
+        public Matrix getParent() {
+            return Matrix.this;
+        }
+
+        /**
+         * String representation of the object
+         * @return the string representation
+         */
+        public String toString() {
+            return getParent() + "[" + row + "][" + col + "] = " + getVal();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(!(obj instanceof MatrixEntry))
+                return false;
+            MatrixEntry o = (MatrixEntry) obj;
+            return row == o.getRow() && col == o.getCol() && getParent() == o.getParent();
+        }
+
     }
 
 }

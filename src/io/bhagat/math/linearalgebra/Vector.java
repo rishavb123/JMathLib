@@ -401,6 +401,14 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         }
 
         /**
+         * Sets the value in the vector
+         * @param val the value to set it to
+         */
+        public void setVal(double val) {
+            set(val, index);
+        }
+
+        /**
          * Gets the index
          * @return the index
          */
