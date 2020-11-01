@@ -1,7 +1,13 @@
 package io.bhagat.math;
 
-public abstract interface Function<E, T> {
+public interface Function<E, T> {
 
-    public abstract T f(E x);
+    T f(E x);
+
+    static <E> E[] map(E[] arr, Function<E, E> func) {
+        for(int i = 0; i < arr.length; i++)
+            arr[i] = func.f(arr[i]);
+        return arr;
+    }
 
 }

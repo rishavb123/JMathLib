@@ -47,16 +47,25 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
      * @param vs the array of vectors
      */
     public Matrix(Vector... vs) {
-        this(vs.length, vs[0].getLength());
+        this(true, vs);
+    }
+
+    /**
+     *
+     * @param vs the array of vectors
+     * @param asRows true if the vectors are going to set as rows false if they are as columns
+     */
+    public Matrix(boolean asRows, Vector... vs) {
+        this(asRows? vs.length: vs[0].getLength(), asRows? vs[0].getLength(): vs.length);
         for(Vector v: vs) {
             if (v.getLength() != vs[0].getLength()) {
                 throw new InvalidShapeException(vs[0].toString(), v.toString());
             }
         }
-        Object[] backingArray = getBackingArray();
-        for(int i = 0; i < vs.length; i++) {
-            System.arraycopy(vs[i].getBackingArray(), 0, backingArray, i * getCols(), getCols());
-        }
+        if(asRows)
+            setRowVectors(vs);
+        else
+            setColVectors(vs);
     }
 
     /**
@@ -197,6 +206,34 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     }
 
     /**
+     * Adds a row to a matrix
+     * @param v the vector row
+     * @param index the index to add to
+     * @return the new matrix
+     */
+    public Matrix addRow(Vector v, int index) {
+        if (index < 0 || index > getRows()) {
+            throw new IndexOutOfBoundsException("Row " + index + " is out of bounds for matrix of dimensions "
+                    + getRows() + ", " + getCols());
+        }
+        Vector[] newRows = new Vector[getRows() + 1];
+        Vector[] rows = getRowVectors();
+        System.arraycopy(rows, 0, newRows, 0, index);
+        newRows[index] = v;
+        System.arraycopy(rows, index, newRows, index + 1, getRows() - index);
+        return new Matrix(newRows);
+    }
+
+    /**
+     * Adds a row to the end of the matrix
+     * @param v the row vector
+     * @return the new matrix
+     */
+    public Matrix addRow(Vector v) {
+        return addRow(v, getRows());
+    }
+
+    /**
      * Removes the column specified by the index and returns the resultant matrix
      * @param index the index
      * @return the new matrix with removed column
@@ -217,6 +254,34 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
             }
         }
         return m;
+    }
+
+    /**
+     * Adds a column to a matrix
+     * @param v the vector column
+     * @param index the index to add to
+     * @return the new matrix
+     */
+    public Matrix addColumn(Vector v, int index) {
+        if (index < 0 || index > getCols()) {
+            throw new IndexOutOfBoundsException("Column " + index + " is out of bounds for matrix of dimensions "
+                    + getRows() + ", " + getCols());
+        }
+        Vector[] newCols = new Vector[getCols() + 1];
+        Vector[] cols = getColVectors();
+        System.arraycopy(cols, 0, newCols, 0, index);
+        newCols[index] = v;
+        System.arraycopy(cols, index, newCols, index + 1, getCols() - index);
+        return new Matrix(newCols);
+    }
+
+    /**
+     * Adds a column to the end of the matrix
+     * @param v the column vector
+     * @return the new matrix
+     */
+    public Matrix addColumn(Vector v) {
+        return addColumn(v, getCols());
     }
 
     /**
@@ -295,7 +360,20 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         return cofactor().transpose().scale(1/determinant());
     }
 
-    // TODO: QR Factorization
+    /**
+     * Computes the QR factorization of a matrix
+     * @return an array of matricies where the first matrix is Q and the second one is R;
+     */
+    public Matrix[] QR() {
+        Matrix Q = new Matrix(false, Vector.orthonormalize(getColVectors()));
+        Matrix R = Matrix.multiply(Q.transpose(), this);
+        if(Double.isNaN(Q.get(0, 0)) || Double.isNaN(R.get(0, 0))) {
+            Q = identityMatrix(getRows());
+            R = clone();
+        }
+        return new Matrix[] {Q, R};
+    }
+
     // TODO: LU Factorization
     // TODO: Eigen Problem
     // TODO: Convolutions
@@ -565,6 +643,16 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         for(int i = 0; i < size; i++)
             m.set(1.0, i, i);
         return m;
+    }
+
+    /**
+     * Augments a matrix with a vector
+     * @param A the matrix
+     * @param b the vector
+     * @return the augmented matrix
+     */
+    public static Matrix augment(Matrix A, Vector b) {
+        return A.addColumn(b);
     }
 
     /**

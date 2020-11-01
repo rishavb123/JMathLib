@@ -75,19 +75,27 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     }
 
     /**
-     * Normalizes the vector from one range to another
+     * Changes the vector from one range to another
      * @param origMin the original minimum of the range
      * @param origMax the original maximum of the range
      * @param min the new minimum of the range
      * @param max the new maximum of the range
      * @return a reference to this vector
      */
-    public Vector normalize(double origMin, double origMax, double min, double max) {
+    public Vector changeRange(double origMin, double origMax, double min, double max) {
         Object[] backingArray = getBackingArray();
         for(int i = 0; i < getLength(); i++) {
             backingArray[i] = ((double) backingArray[i] - origMin) * (max - min) / (origMax - origMin) + min;
         }
         return this;
+    }
+
+    /**
+     * Normalizes the vector by dividing my its magnitude
+     * @return a reference to this normalized vector
+     */
+    public Vector normalize() {
+        return scale(1/magnitude());
     }
 
     /**
@@ -420,7 +428,9 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
         return v;
     }
 
-
+    public static Vector[] orthonormalize(Vector[] x) {
+        return Function.map(orthonormalize(x), Vector::normalize);
+    }
 
     /**
      * A class to hold the entries of a vector
