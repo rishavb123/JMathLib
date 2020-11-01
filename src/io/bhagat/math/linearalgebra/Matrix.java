@@ -374,7 +374,6 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         return new Matrix[]{Q, R};
     }
 
-    // TODO: Row Echelon Form and Reduced Row Echelon Form
     // TODO: LU Factorization
     // TODO: Eigen Problem
     // TODO: Convolutions
