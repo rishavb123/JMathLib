@@ -367,13 +367,14 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     public Matrix[] QR() {
         Matrix Q = new Matrix(false, Vector.orthonormalize(getColVectors()));
         Matrix R = Matrix.multiply(Q.transpose(), this);
-        if(Double.isNaN(Q.get(0, 0)) || Double.isNaN(R.get(0, 0))) {
+        if (Double.isNaN(Q.get(0, 0)) || Double.isNaN(R.get(0, 0))) {
             Q = identityMatrix(getRows());
             R = clone();
         }
-        return new Matrix[] {Q, R};
+        return new Matrix[]{Q, R};
     }
 
+    // TODO: Row Echelon Form and Reduced Row Echelon Form
     // TODO: LU Factorization
     // TODO: Eigen Problem
     // TODO: Convolutions
