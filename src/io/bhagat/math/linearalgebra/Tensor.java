@@ -232,6 +232,25 @@ public class Tensor<T> implements Iterable<T>, Serializable {
     }
 
     /**
+     * Gets a value from the backing array of the tensor
+     * @param i the index of the value
+     * @param defaultValue the default value to use if the backing array value is null
+     * @return the value at the specified index
+     */
+    T getFromBackingArray(int i, T defaultValue) {
+        return backingArray[i] == null? defaultValue: (T) backingArray[i];
+    }
+
+    /**
+     * Sets a value in the backing array of the tensor
+     * @param i the index
+     * @param value the value to put in the index
+     */
+    void setInBackingArray(int i, T value) {
+        backingArray[i] = value;
+    }
+
+    /**
      * Gets the length of the backing array
      * @return the backing array length
      */

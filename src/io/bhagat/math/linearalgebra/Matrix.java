@@ -1,9 +1,13 @@
 package io.bhagat.math.linearalgebra;
 
+import io.bhagat.math.Constants;
 import io.bhagat.math.Function;
 import io.bhagat.math.exceptions.InvalidShapeException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
 
@@ -405,7 +409,136 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         return new Matrix[] {L, U};
     }
 
-    // TODO: Eigen Problem
+
+    /**
+     * Calculates the eigenvalues and corresponding unit eigenvectors
+     * @param iterations the number of iterations for the QR algorithm
+     * @return a hashmap with keys of eigenvalues and values of eigenvectors
+     */
+    public HashMap<Double, Vector> eigenproblem(int iterations) {
+        double[] eigenvalues = eigenvalues(iterations);
+        HashMap<Double, Vector> solution = new HashMap<>();
+        for(double eigenvalue: eigenvalues) {
+            Vector eigenvector = eigenvector(eigenvalue);
+            boolean add = true;
+            for(Double d: eigenvector)
+                if(Double.isNaN(d)) {
+                    add = false;
+                    break;
+                }
+            if(add && !Double.isNaN(eigenvalue))
+                solution.put(eigenvalue, eigenvector);
+        }
+        return solution;
+    }
+
+    /**
+     * Computes the eigenvalues of the matrix
+     * @param iterations the number of iterations for the QR algorithm
+     * @return the sorted array of eigenvalues
+     */
+    public double[] eigenvalues(int iterations) {
+        int scalar = 0;
+        if(!isSquare())
+            throw new InvalidShapeException("Cannot find eigenvalues of a non-square matrix");
+
+        int n = getRows();
+        double[] lambdas = new double[n];
+
+        Matrix shift = identityMatrix(n).scale(scalar);
+        Matrix A = Matrix.subtract(this, shift);
+
+        for(int i = 0; i < iterations; i++) {
+            Matrix[] qr = A.QR();
+            A = Matrix.multiply(qr[1], qr[0]);
+        }
+
+        A = Matrix.add(A, shift);
+
+        for(int i = 0; i < n; i++) {
+            int factor = Constants.N / 10;
+            lambdas[i] = Math.round(factor * A.get(i, i)) / (double) factor;
+        }
+
+        for(int i = 1; i < n; i++) {
+            int j = i;
+            while(j > 0 && lambdas[j] > lambdas[j - 1]) {
+                double temp = lambdas[j];
+                lambdas[j] = lambdas[j - 1];
+                lambdas[j - 1] = temp;
+                j--;
+            }
+        }
+
+        return lambdas;
+    }
+
+    /**
+     * Gets the eigenvectors
+     * @param eigenvalues the eigenvalues
+     * @return the array of eigenvectors
+     */
+    public Vector[] eigenvectors(double[] eigenvalues) {
+        ArrayList<Vector> eigenvectors = new ArrayList<>();
+        for(double eigenvalue: eigenvalues) {
+            Vector eigenvector = eigenvector(eigenvalue);
+            boolean add = true;
+            for(Double d: eigenvector)
+                if(Double.isNaN(d)) {
+                    add = false;
+                    break;
+                }
+            if(add && !Double.isNaN(eigenvalue))
+                eigenvectors.add(eigenvector);
+        }
+        return eigenvectors.toArray(new Vector[eigenvectors.size()]);
+    }
+
+    /**
+     * Calculates an eigenvector corresponding to an eigenvalue
+     * @param eigenvalue the eigenvalue
+     * @return the eigenvector
+     */
+    public Vector eigenvector(double eigenvalue) {
+        int n = getRows();
+        Vector[] rows = Matrix.subtract(this,  identityMatrix(n).scale(eigenvalue)).reducedRowEchelonForm().getRowVectors();
+        Function.map(rows, (Function<Vector, Void>) x -> {
+            System.out.println(x);
+            return null;
+        });
+        Vector eigenvector = new Vector(n);
+        for(int i = n - 1; i >= 0; i--) {
+            boolean ignore = true;
+            Vector row = rows[i];
+            for(int j = 0; j < row.getLength(); j++)
+                if(!Double.isNaN(row.get(j)) && row.get(j) > Constants.EPSILON)
+                {
+                    ignore = false;
+                    break;
+                }
+            if(ignore) {
+                eigenvector.set(1.0, i);
+                continue;
+            }
+            eigenvector.set(-Vector.dot(eigenvector, row)/row.get(i), i);
+        }
+        eigenvector.clean();
+        eigenvector.normalize();
+        return eigenvector;
+    }
+
+    /**
+     * Gets the singular values of a matrix
+     * @param iterations the iterations for the QR algorithm
+     * @return the array of singular values
+     */
+    public double[] singularValues(int iterations) {
+        double[] values = Matrix.multiply(this, transpose()).eigenvalues(iterations);
+        for(int i = 0; i < values.length; i++)
+            values[i] = Math.sqrt(values[i]);
+        return values;
+    }
+
     // TODO: Convolutions
 
     /**
@@ -430,7 +563,7 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     public Matrix translate(double c) {
         Object[] backingArray = getBackingArray();
         for(int i = 0; i < getLength(); i++) {
-            backingArray[i] = (double) backingArray[i] + c;
+            backingArray[i] = backingArray[i] == null? c : (double) backingArray[i] + c;
         }
         return this;
     }
@@ -534,8 +667,21 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     public Matrix normalize(double origMin, double origMax, double min, double max) {
         Object[] backingArray = getBackingArray();
         for(int i = 0; i < getLength(); i++) {
-            backingArray[i] = ((double) backingArray[i] - origMin) * (max - min) / (origMax - origMin) + min;
+            setInBackingArray(i ,
+                    (getFromBackingArray(i, 0.0) - origMin) * (max - min) / (origMax - origMin) + min);
         }
+        return this;
+    }
+
+    /**
+     * Changes all the null elements and elements less that Constants.EPSILON to 0
+     * @return a reference to this matrix
+     */
+    public Matrix clean() {
+        for(int i = 0; i < getRows(); i++)
+            for(int j = 0; j < getCols(); j++)
+                if(Math.abs(get(i, j)) < Constants.EPSILON)
+                    set(0.0, i, j);
         return this;
     }
 
@@ -607,10 +753,8 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     public static double dot(Matrix a, Matrix b) {
         assertShape(a, b);
         double sum = 0;
-        Object[] aBackingArray = a.getBackingArray();
-        Object[] bBackingArray = b.getBackingArray();
         for(int i = 0; i < a.getLength(); i++)
-            sum += (Double) aBackingArray[i] * (Double) bBackingArray[i];
+            sum += a.getFromBackingArray(i,0.0) * b.getFromBackingArray(i, 0.0);
         return sum;
     }
 
@@ -657,11 +801,8 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
             throw new InvalidShapeException(a.toString(), b.toString());
         Matrix c = new Matrix(a.getDimensions()[0], a.getDimensions()[1]);
 
-        Object[] aArr = a.getBackingArray();
-        Object[] bArr = b.getBackingArray();
-        Object[] cArr = c.getBackingArray();
         for(int i = 0; i < c.getLength(); i++)
-            cArr[i] = (double) aArr[i] + (double) bArr[i];
+            c.setInBackingArray(i, a.getFromBackingArray(i, 0.0) + b.getFromBackingArray(i, 0.0));
 
         return c;
     }
@@ -677,11 +818,8 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
             throw new InvalidShapeException(a.toString(), b.toString());
         Matrix c = new Matrix(a.getDimensions()[0], a.getDimensions()[1]);
 
-        Object[] aArr = a.getBackingArray();
-        Object[] bArr = b.getBackingArray();
-        Object[] cArr = c.getBackingArray();
         for(int i = 0; i < c.getLength(); i++)
-            cArr[i] = (double) aArr[i] - (double) bArr[i];
+            c.setInBackingArray(i, a.getFromBackingArray(i, 0.0) - b.getFromBackingArray(i, 0.0));
 
         return c;
     }

@@ -1,7 +1,12 @@
 package tests.math.linearalgebra;
 
+import io.bhagat.math.Constants;
+import io.bhagat.math.Function;
 import io.bhagat.math.linearalgebra.Matrix;
 import io.bhagat.math.linearalgebra.Vector;
+
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class TestMatrix {
 
@@ -12,21 +17,12 @@ public class TestMatrix {
 //        System.out.println(A);
 //        System.out.println(A.removeColumn(1));
         Matrix A = new Matrix(new double[][] {
-                {2, 4},
-                {6, 8}
+                {0, 1},
+                {-1, -2}
         });
-        System.out.println("A:");
-        A.print();
 
-        Matrix[] ans = A.LU();
-        System.out.println("L:");
-        ans[0].print();
-
-        System.out.println("U:");
-        ans[1].print();
-
-        System.out.println("L*U:");
-        Matrix.multiply(ans[0], ans[1]).print();
+        HashMap<Double, Vector> eigensolution = A.eigenproblem(Constants.N);
+        System.out.println(eigensolution);
 
     }
 

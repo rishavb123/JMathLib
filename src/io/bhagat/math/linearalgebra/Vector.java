@@ -5,8 +5,6 @@ import io.bhagat.math.Function;
 import io.bhagat.math.exceptions.InvalidShapeException;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-
 public class Vector extends Tensor<Double> implements Comparable<Vector>{
 
     private VectorEntry[] vectorEntries;
@@ -99,6 +97,17 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     }
 
     /**
+     * Changes all the null elements and elements less that Constants.EPSILON to 0
+     * @return a reference to this vector
+     */
+    public Vector clean() {
+        for(int i = 0; i < getLength(); i++)
+            if(Math.abs(get(i)) < Constants.EPSILON)
+                set(0.0, i);
+        return this;
+    }
+
+    /**
      * Scales the vector by a scalar
      * @param c the scalar constant
      * @return a reference to this vector
@@ -106,7 +115,8 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     public Vector scale(double c) {
         Object[] backingArray = getBackingArray();
         for(int i = 0; i < getLength(); i++) {
-            backingArray[i] = (double) backingArray[i] * c;
+            if(backingArray[i] != null)
+                backingArray[i] = (double) backingArray[i] * c;
         }
         return this;
     }
@@ -119,7 +129,7 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     public Vector translate(double c) {
         Object[] backingArray = getBackingArray();
         for(int i = 0; i < getLength(); i++) {
-            backingArray[i] = (double) backingArray[i] + c;
+            backingArray[i] = backingArray[i] == null? c: (double) backingArray[i] + c;
         }
         return this;
     }
@@ -165,9 +175,8 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
      */
     public Vector randomize(double min, double max)
     {
-        Object[] backingArray = getBackingArray();
         for(int i = 0; i < getLength(); i++)
-            backingArray[i] = Math.random()*(max - min) + min;
+            set(Math.random()*(max - min) + min, i);
         return this;
     }
 
@@ -434,7 +443,7 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     }
 
     public static Vector[] orthonormalize(Vector[] x) {
-        return Function.map(orthonormalize(x), Vector::normalize);
+        return Function.mapOnto(orthogonalize(x), Vector::normalize);
     }
 
     /**
