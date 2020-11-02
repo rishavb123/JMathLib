@@ -539,7 +539,23 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         return values;
     }
 
+    /**
+     * Finds both the singular values and corresponding eigenvectors
+     * @param iterations the number of iterations for the QR algorithm
+     * @return a HashMap containing the singular values as keys and the eigenvectors as values
+     */
+    public HashMap<Double, Vector> singularSolution(int iterations)
+    {
+        HashMap<Double, Vector> eigenSolution = Matrix.multiply(transpose(), this).eigenproblem(iterations);
+        HashMap<Double, Vector> singularSolution = new HashMap<>();
+        for(Double eigenvalue: eigenSolution.keySet()) {
+            singularSolution.put(Math.sqrt(eigenvalue), eigenSolution.get(eigenvalue));
+        }
+        return singularSolution;
+    }
+
     // TODO: Convolutions
+    // TODO: SVD Decomposition
 
     /**
      * Scales the matrix by a scalar
