@@ -374,7 +374,37 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         return new Matrix[]{Q, R};
     }
 
-    // TODO: LU Factorization
+    /**
+     * Calculates the LU factorization of a square matrix using the Doolittle Algorithm
+     * @return
+     */
+    public Matrix[] LU() {
+        if(!isSquare())
+            throw new InvalidShapeException("Doolittle Algorithm only supports square matricies");
+        int n = getRows();
+        Matrix L = new Matrix(n, n);
+        Matrix U = new Matrix(n ,n);
+        for(int i = 0; i < n; i++) {
+            for(int k = i; k < n; k++) {
+                double sum = 0;
+                for(int j = 0; j < i; j++)
+                    sum += L.get(i, j) * U.get(j, k);
+                U.set(get(i, k) - sum, i, k);
+            }
+            for(int k = i; k < n; k++) {
+                if(i == k)
+                    L.set(1.0, i, i);
+                else {
+                    double sum = 0;
+                    for(int j = 0; j < i; j++)
+                        sum += L.get(k, j) * U.get(j, i);
+                    L.set((get(k, i) - sum) / U.get(i, i), k, i);
+                }
+            }
+        }
+        return new Matrix[] {L, U};
+    }
+
     // TODO: Eigen Problem
     // TODO: Convolutions
 
@@ -386,7 +416,8 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     public Matrix scale(double c) {
         Object[] backingArray = getBackingArray();
         for(int i = 0; i < getLength(); i++) {
-            backingArray[i] = (double) backingArray[i] * c;
+            if(backingArray[i] != null)
+                backingArray[i] = (double) backingArray[i] * c;
         }
         return this;
     }
@@ -469,6 +500,24 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         return this;
     }
 
+    private static String pad(String string, int length) {
+        if(string.length() > length) {
+            string = string.substring(0, length - 3) + "...";
+        }
+        return String.format("%-"+length+ "s", string);
+    }
+
+    /**
+     * Prints the matrix in a more readable format
+     */
+    public void print() {
+        for(int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++)
+                System.out.print(pad(get(i, j).toString(), 30));
+            System.out.println();
+        }
+    }
+
     @Override
     public int compareTo(Matrix o) {
         return Double.compare(determinant(), o.determinant());
@@ -494,6 +543,11 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     public Double get(int... pos) {
         Double d = super.get(pos);
         return d == null? 0: d;
+    }
+
+    @Override
+    protected String nullString() {
+        return "0";
     }
 
     @Override
@@ -529,7 +583,7 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
      * @return the output matrix
      */
     public static Matrix multiply(Matrix a, Matrix b) {
-        if(a.getDimensions()[1] == b.getDimensions()[0])
+        if(a.getDimensions()[1] != b.getDimensions()[0])
             throw new InvalidShapeException(a.toString(), b.toString());
 
         Matrix m = new Matrix(a.getRows(), b.getCols());

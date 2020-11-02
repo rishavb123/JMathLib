@@ -256,6 +256,11 @@ public class Vector extends Tensor<Double> implements Comparable<Vector>{
     }
 
     @Override
+    protected String nullString() {
+        return "0";
+    }
+
+    @Override
     public Vector clone() {
         return new Vector(super.clone());
     }

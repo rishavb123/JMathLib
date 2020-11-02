@@ -182,18 +182,27 @@ public class Tensor<T> implements Iterable<T>, Serializable {
         return result;
     }
 
+    protected String nullString() {
+        return "null";
+    }
+
     /**
      * A string representation of this object
      * @return the string
      */
     public String toString() {
+        String nullStr = nullString();
+        return toString(nullStr);
+    }
+
+    public String toString(String nullStr) {
         if(rank == 0)
-            return backingArray[0] == null? "null": backingArray[0].toString();
+            return get() == null? nullStr: get().toString();
         StringBuilder s = new StringBuilder("[");
         for(int i = 0; i < dimensions[0] - 1; i++) {
-            s.append(getSubTensor(i)).append(", ");
+            s.append(getSubTensor(i).toString(nullStr)).append(", ");
         }
-        s.append(getSubTensor(dimensions[0] - 1));
+        s.append(getSubTensor(dimensions[0] - 1).toString(nullStr));
         s.append("]");
         return s.toString();
     }
