@@ -555,7 +555,38 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
     }
 
     // TODO: Convolutions
-    // TODO: SVD Decomposition
+
+    /**
+     * TODO: this method isn't working
+     * Computers the singular value decomposition of a matrix
+     * @param iterations the number of iterations for the eigensolution
+     * @return an array of matricies that holds U, Sigma, and V
+     */
+    public Matrix[] singularValueDecomposition(int iterations)
+    {
+        Matrix U = new Matrix(getRows(), getRows());
+        Matrix S = new Matrix(getRows(), getCols());
+        Matrix V = new Matrix(getCols(), getCols());
+
+        Matrix ATA = Matrix.multiply(transpose(), this);
+
+        double[] eigenvalues = ATA.eigenvalues(iterations);
+        Vector[] eigenvectors = ATA.eigenvectors(eigenvalues);
+        double[] singularValues = new double[eigenvalues.length];
+
+        for (int i = 0; i < eigenvalues.length; i++) {
+            singularValues[i] = Math.sqrt(eigenvalues[i]);
+            if (i < S.getRows())
+                S.set(singularValues[i], i, i);
+        }
+        V.setColVectors(eigenvectors);
+        Vector[] uCols = new Vector[eigenvectors.length];
+        for(int i = 0; i < uCols.length; i++) {
+            uCols[i] = Matrix.multiply(this, eigenvectors[i]).toVector().scale(1/singularValues[i]);
+        }
+        U.setColVectors(uCols);
+        return new Matrix[] { U, S, V };
+    }
 
     /**
      * Scales the matrix by a scalar
@@ -569,6 +600,20 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
                 backingArray[i] = (double) backingArray[i] * c;
         }
         return this;
+    }
+
+    /**
+     * Converts a matrix that only has one row or column into a vector
+     * @return the vector
+     */
+    public Vector toVector() {
+        int[] shape = getDimensions();
+        if (shape[0] == 1) {
+            return getRowVector(0);
+        } else if (shape[1] == 1) {
+            return getColVector(0);
+        }
+        throw new InvalidShapeException("Matrix must have either one row or one column to be converted to a vector");
     }
 
     /**

@@ -22,7 +22,16 @@ public class TestMatrix {
         });
 
         HashMap<Double, Vector> eigensolution = A.eigenproblem(Constants.N);
-        System.out.println(eigensolution);
+//        System.out.println(eigensolution);
+
+        Matrix A2 = new Matrix(new double[][] {
+                {3, 2, 2},
+                {2, 3, -2}
+        });
+        Matrix[] SVD = A2.singularValueDecomposition(Constants.N);
+        System.out.println(SVD[0]);
+        System.out.println(SVD[1]);
+        System.out.println(SVD[2]);
 
     }
 
