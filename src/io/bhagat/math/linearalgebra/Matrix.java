@@ -554,8 +554,6 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
         return singularSolution;
     }
 
-    // TODO: Convolutions
-
     /**
      * TODO: this method isn't working
      * Computers the singular value decomposition of a matrix
@@ -883,6 +881,17 @@ public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
             c.setInBackingArray(i, a.getFromBackingArray(i, 0.0) - b.getFromBackingArray(i, 0.0));
 
         return c;
+    }
+
+    /**
+     * TODO: implement this method
+     * Convolves a matrix across another matrix
+     * @param a
+     * @param b
+     * @return
+     */
+    public static Matrix convolve(Matrix a, Matrix b) {
+        return null;
     }
 
     /**
