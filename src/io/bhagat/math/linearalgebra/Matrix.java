@@ -7,8 +7,10 @@ import io.bhagat.math.exceptions.InvalidShapeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 
+/**
+ * A class to make a matrix of doubles
+ */
 public class Matrix extends Tensor<Double> implements Comparable<Matrix> {
 
     MatrixEntry[][] matrixEntries;
