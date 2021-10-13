@@ -13,5 +13,6 @@
             "name": "Old Docs",
             "url": "https://neuralnetwork.bhagat.io/"
         }
-    ]
+    ],
+    "priority": 5
 }
