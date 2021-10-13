@@ -1,6 +1,6 @@
 package io.bhagat.math.calculus;
 
-import io.bhagat.math.Function;
+import io.bhagat.math.functions.Function;
 import io.bhagat.math.settheory.Interval;
 import io.bhagat.math.linearalgebra.Vector;
 

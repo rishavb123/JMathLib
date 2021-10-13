@@ -1,4 +1,4 @@
-package io.bhagat.math;
+package io.bhagat.math.functions;
 
 public interface Function<E, T> {
 

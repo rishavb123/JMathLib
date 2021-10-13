@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import io.bhagat.math.Function;
+import io.bhagat.math.functions.Function;
 import io.bhagat.math.settheory.Interval;
 import io.bhagat.math.linearalgebra.Vector;
 

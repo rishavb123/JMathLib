@@ -1,6 +1,6 @@
 package io.bhagat.math.linearalgebra;
 
-import io.bhagat.math.Function;
+import io.bhagat.math.functions.Function;
 
 import java.io.Serializable;
 import java.util.ArrayList;

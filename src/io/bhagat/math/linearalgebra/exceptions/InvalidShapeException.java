@@ -1,4 +1,4 @@
-package io.bhagat.math.exceptions;
+package io.bhagat.math.linearalgebra.exceptions;
 
 /**
  * An exception for when the shape of the related objects do work with each other
@@ -13,7 +13,7 @@ public class InvalidShapeException extends RuntimeException {
         super(buildString(objs));
     }
 
-    public static String buildString(String... objs) {
+    private static String buildString(String... objs) {
         if(objs.length == 0)
             return "The shape of the related objects are not compatible for this operation";
         StringBuilder s = new StringBuilder();

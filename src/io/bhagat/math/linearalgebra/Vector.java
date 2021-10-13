@@ -1,8 +1,8 @@
 package io.bhagat.math.linearalgebra;
 
 import io.bhagat.math.Constants;
-import io.bhagat.math.Function;
-import io.bhagat.math.exceptions.InvalidShapeException;
+import io.bhagat.math.functions.Function;
+import io.bhagat.math.linearalgebra.exceptions.InvalidShapeException;
 import org.jetbrains.annotations.NotNull;
 
 public class Vector extends Tensor<Double> implements Comparable<Vector>{

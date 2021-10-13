@@ -1,12 +1,10 @@
 package tests.math.linearalgebra;
 
 import io.bhagat.math.Constants;
-import io.bhagat.math.Function;
 import io.bhagat.math.linearalgebra.Matrix;
 import io.bhagat.math.linearalgebra.Vector;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class TestMatrix {
 

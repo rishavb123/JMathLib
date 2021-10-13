@@ -2,7 +2,7 @@ package io.bhagat.math.statistics;
 
 import java.util.Random;
 
-import io.bhagat.math.Function;
+import io.bhagat.math.functions.Function;
 import io.bhagat.math.settheory.Interval;
 import io.bhagat.math.calculus.Calculus;
 

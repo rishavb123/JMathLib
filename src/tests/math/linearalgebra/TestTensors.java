@@ -1,6 +1,6 @@
 package tests.math.linearalgebra;
 
-import io.bhagat.math.Function;
+import io.bhagat.math.functions.Function;
 import io.bhagat.math.linearalgebra.Tensor;
 import tests.TestUtils;
 
