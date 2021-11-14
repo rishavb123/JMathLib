@@ -48,6 +48,47 @@ public class Interval<E extends Comparable<E>> implements SetBase<E>{
     }
 
     /**
+     * Checks if an interval is contained in this interval
+     * @param x the interval to check
+     * @return whether it is contained in the interval x
+     */
+    public boolean contains(Interval<E> x) {
+        int c1 = lowerBound.compareTo(x.lowerBound);
+        int c2 = x.upperBound.compareTo(upperBound);
+        if (c1 < 0 && c2 < 0) {
+            return true;
+        } else if (c1 == 0 || c2 == 0) {
+            return !open && !x.open;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if an interval is disjoint from this interval
+     * @param x the interval to check
+     * @returns whether it is disjoint from the interval x
+     */
+    public boolean disjoint(Interval<E> x) {
+        int c1 = lowerBound.compareTo(x.upperBound);
+        int c2 = x.lowerBound.compareTo(upperBound);
+        if (c1 > 0 || c2 > 0) {
+            return true;
+        } else if (c1 == 0 || c2 == 0) {
+            return open || x.open;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if an interval is equal to this interval
+     * @param x the interval to check
+     * @return whether it is equal to the interval x
+     */
+    public boolean equals(Interval<E> x) {
+        return lowerBound.equals(x.lowerBound) && upperBound.equals(x.upperBound) && open == x.open;
+    }
+
+    /**
      * Gets the lower bound
      * @return the lower bound
      */
