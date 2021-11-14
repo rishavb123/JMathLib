@@ -330,6 +330,12 @@ public class Tensor<T> implements Iterable<T>, Serializable {
         return tensor.clone().map(function);
     }
 
+    /**
+     * Checks if a tensor has the same dimensions as this tensor
+     * @param a the first tensor to check
+     * @param b the second tensor to check
+     * @return whether the tensors have the same dimensions
+     */
     public static boolean equalShape(Tensor<?> a, Tensor<?> b) {
         return Arrays.equals(a.getDimensions(), b.getDimensions());
     }
