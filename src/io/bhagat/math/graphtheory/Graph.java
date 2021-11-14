@@ -1,13 +1,17 @@
 package io.bhagat.math.graphtheory;
 
-import io.bhagat.math.linearalgebra.Matrix;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
+/**
+ * A graph data structure.
+ * @param <T> The type of the vertices.
+ */
 public class Graph<T> {
+
+    // TODO: implement a version of this class using edges and vertices
 
     private Node<T> head;
 

@@ -3,6 +3,10 @@ package io.bhagat.math.graphtheory;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a node in a graph.
+ * @param <T> The type of the node's value.
+ */
 public class Node<T> {
 
     private static final int DEFAULT_INITIAL_CONNECTION_CAPACITY = 5;
