@@ -16,4 +16,16 @@ public interface SetBase<E> {
         return x -> s1.contains(x) && s2.contains(x);
     }
 
+    static <E> SetBase<E> difference(SetBase<E> s1, SetBase<E> s2) {
+        return x -> s1.contains(x) && !s2.contains(x);
+    }
+
+    static <E> SetBase<E> complement(SetBase<E> s) {
+        return x -> !s.contains(x);
+    }
+
+    static <E> SetBase<E> symmetricDifference(SetBase<E> s1, SetBase<E> s2) {
+        return x -> s1.contains(x) != s2.contains(x);
+    }
+
 }
