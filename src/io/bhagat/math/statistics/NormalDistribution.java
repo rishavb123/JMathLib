@@ -36,7 +36,15 @@ public class NormalDistribution extends DoubleDistribution {
 	public NormalDistribution(QuantitativeDataList list) {
 		this(list.mean(), list.standardDeviation());
 	}
-	
+
+	/**
+	 * Samples a random value from the distribution
+	 * @return a random value from the distribution
+	 */
+	public double sample() {
+		return mean + new Random().nextGaussian() * standardDeviation;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
